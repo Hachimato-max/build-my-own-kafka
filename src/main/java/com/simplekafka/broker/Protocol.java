@@ -3,11 +3,11 @@ package com.simplekafka.broker;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-public class Protocal {
+public class Protocol {
     public static final byte PRODUCE = 0x01;
 
     public static ByteBuffer encodeProduceRequest(
-            string topic, int partition, byte[] message) {
+            String topic, int partition, byte[] message) {
 
         byte[] topicBytes = topic.getBytes(StandardCharsets.UTF_8);
 
