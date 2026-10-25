@@ -1,15 +1,23 @@
 package org.example;
 
+import com.simplekafka.broker.Protocol;
+
+import java.nio.ByteBuffer;
+
 public class Main {
     public static void main(String[] args) {
-        byte[] message = "hello".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        // 模拟 Broker 返回：消息写入成功，offset 为 10
+        ByteBuffer response = ByteBuffer.allocate(10);
+        response.put(Protocol.PRODUCE_RESPONSE);
+        response.putLong(10L);
+        response.put((byte) 0);
+        response.flip();
 
-        java.nio.ByteBuffer buffer =
-                com.simplekafka.broker.Protocol.encodeProduceRequest(
-                        "test", 0, message);
+        Protocol.ProduceResult result =
+                Protocol.decodeProduceResponse(response);
 
-        System.out.println("请求总字节数：" + buffer.remaining());
-        System.out.println("请求类型：" + buffer.get());
-        System.out.println("Topic 字节长度：" + buffer.getShort());
+        System.out.println("是否成功：" + result.isSuccess()); // true
+        System.out.println("消息偏移量：" + result.getOffset()); // 10
+        System.out.println("错误信息：" + result.getError());    // null
     }
 }
